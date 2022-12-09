@@ -1,10 +1,11 @@
 import { useSelector, useDispatch } from "react-redux"
-import { useRef } from "react"
-//import { coachAction } from "../../Store/CoachSlice"
+import { useEffect, useRef } from "react"
+import { coachAction } from "../../Store/CoachSlice"
 import { AddCoach } from "../../Store/CoachSlice"
+import { useNavigate } from "react-router-dom"
 
 export const CoachSignUp = () => {
-
+    //const coachAdded = useSelector(state => state.coach.coachAdded)
     // id: 1,
     // name: "Rose",
     // password: "rose12345",
@@ -13,28 +14,45 @@ export const CoachSignUp = () => {
     // mobileNumber: 1234567890,
     // speciality: "Confidence Issues"
     const dispatch = useDispatch()
+    const navigate = useNavigate()
 
     const name = useRef()
     const password = useRef()
-    const gender = useRef()
+   // const gender = useRef()
     const dateOfBirth = useRef()
     const mobileNumber = useRef()
     const speciality = useRef()
 
     const coach = useSelector(state => state.coach.coach)
+    const coachAdded = useSelector(state => state.coach.coachAdded)
     console.log(coach)
+    useEffect(() => {
+        console.log(coachAdded)
+        if (coachAdded) {
+            navigate('../coach')
+            dispatch(coachAction.togglecoachAdded())
+        }
+    }, [coachAdded, navigate, dispatch])
 
     const coachSubmissionHandler = (e) => {
         e.preventDefault()
+        const ele = document.getElementsByName('gender')
+        console.log(ele)
+        let gen = undefined
+        for (let i = 0; i < ele.length; i++) {
+            if (ele[i].checked) gen = ele[i].value
+        }
         dispatch(AddCoach({
-            id: Math.floor(Math.random() * 5),
+            id: Math.floor(Math.random() * 100),
             name: name.current.value,
             password: password.current.value,
-            gender: gender.current.value,
+            gender: gen,
             dateOfBirth: dateOfBirth.current.value,
             mobileNumber: mobileNumber.current.value,
             speciality: speciality.current.value
         }))
+
+
     }
     return (
 
@@ -75,12 +93,12 @@ export const CoachSignUp = () => {
                         <label htmlFor="gender" className="form-label">Gender</label>
 
                         <div className="form-check">
-                            <input ref={gender} type="radio" className="form-check-input" id="male" name="gender" value="male" />
+                            <input  type="radio" className="form-check-input" id="male" name="gender" value="M" />
                             <label htmlFor="male" className="form-check-label">Male</label>
 
                         </div>
                         <div className="form-check">
-                            <input ref={gender} type="radio" className="form-check-input" id="female" name="gender" value="female" />
+                            <input  type="radio" className="form-check-input" id="female" name="gender" value="F" />
                             <label htmlFor="female" className="form-check-label" >Female</label>
                         </div>
 
@@ -105,6 +123,9 @@ export const CoachSignUp = () => {
                     <button onClick={coachSubmissionHandler} style={{ width: "60%" }} type="submit" className="btn btn-success">Register</button>
                 </div>
             </form>
+
         </div>
+
+
     )
 }

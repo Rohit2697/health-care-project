@@ -1,5 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 
+
+
 const coachInitialState = {
     coach: [{
         id: 1,
@@ -9,7 +11,9 @@ const coachInitialState = {
         dateOfBirth: "1996-01-01",
         mobileNumber: 1234567890,
         speciality: "Confidence Issues"
-    }]
+    }],
+    coachAdded: false,
+    coachAppointment: []
 }
 export const coachSlice = createSlice({
     name: 'coach-slice',
@@ -19,7 +23,22 @@ export const coachSlice = createSlice({
             const newCoach = action.payload
             const isExistingCoach = state.coach.find(coach => coach.id === newCoach.id)
             if (isExistingCoach) return alert("Existing Coach")
+            state.coachAdded = true
             state.coach = [...state.coach, newCoach]
+
+
+
+        },
+        togglecoachAdded(state) {
+            state.coachAdded = false
+            //console.log("after", state.coachAdded)
+        },
+        coachAppointment(state, action) {
+            const appointment = action.payload
+          
+            state.coachAppointment = [...state.coachAppointment, appointment]
+            
+
         }
     }
 })
@@ -44,14 +63,18 @@ const calculateAge = (date) => {
 export const AddCoach = (newCoach) => {
 
     return (dispatch) => {
-        const age = calculateAge(newCoach.dateOfBirth)  
-       console.log(`newCoach.name.length: ${newCoach.name.length}  newCoach.password.length: ${newCoach.password.length} age: ${age}  newCoach.gender.length: ${newCoach.gender.length} newCoach.speciality.length ${newCoach.speciality.length}`)
-        
+        dispatch(coachAction.togglecoachAdded())
+        const age = calculateAge(newCoach.dateOfBirth)
+        console.log(`newCoach.name.length: ${newCoach.name.length}  newCoach.password.length: ${newCoach.password.length} age: ${age}  newCoach.gender.length: ${newCoach.gender.length} newCoach.speciality.length ${newCoach.speciality.length}`)
+
         if (newCoach && newCoach.name.length >= 3 && newCoach.name.length <= 50 && newCoach.password.length >= 5 && newCoach.password.length <= 10
             && age >= 20 && age <= 100 && newCoach.gender.length && newCoach.mobileNumber.length === 10 && newCoach.speciality.length >= 10 && newCoach.speciality.length <= 50) {
             dispatch(coachAction.addCoach(newCoach))
+
+
         }
         else {
+
             alert("Invalid Data")
         }
     }

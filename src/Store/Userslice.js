@@ -13,7 +13,9 @@ const usersInitial = {
         city: "Bangalore",
         state: "Karnataka",
         country: "India"
-    }]
+    }],
+    userAdded: false,
+    userAppointment: []
 }
 export const userSlice = createSlice({
     name: "user-slice",
@@ -22,10 +24,19 @@ export const userSlice = createSlice({
         addUser(state, action) {
             const newUser = action.payload;
             const isExistingUser = state.user.find((user) => user.id === newUser.id)
-            if(isExistingUser) return alert("Existing User")
+            if (isExistingUser) return alert("Existing User")
+            state.userAdded = true;
             state.user = [...state.user, newUser]
 
+
         },
+        toogeAddUser(state) {
+            state.userAdded = false
+        },
+        addAppointment(state, action) {
+            const appointment = action.payload
+            state.userAppointment = [...state.userAppointment, appointment]
+        }
         // showUser() { }
     }
 
@@ -49,9 +60,9 @@ const calculateAge = (date) => {
 export const AddUser = (newUser) => {
     return (dispatch) => {
         //dispatch(userAction.addUser(newUser))
-
+        dispatch(userAction.toogeAddUser())
         const age = calculateAge(newUser.dateOfBirth)
-       // console.log(`newUser.name.length: ${newUser.name.length}  newUser.password.length: ${newUser.password.length} age: ${age}  newUser.gender.length: ${newUser.gender.length}`)
+        // console.log(`newUser.name.length: ${newUser.name.length}  newUser.password.length: ${newUser.password.length} age: ${age}  newUser.gender.length: ${newUser.gender.length}`)
         if (newUser && newUser.name.length >= 3 && newUser.name.length <= 50 && newUser.password.length >= 5 && newUser.password.length <= 10
             && age >= 20 && age <= 100 && newUser.gender.length && newUser.mobileNumber.length === 10) {
             dispatch(userAction.addUser(newUser))
